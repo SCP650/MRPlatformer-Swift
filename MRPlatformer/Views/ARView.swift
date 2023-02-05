@@ -25,6 +25,8 @@ struct ARViewContainer: UIViewRepresentable {
         
         // Display a debug visualization of the mesh.
         arView.debugOptions.insert(.showSceneUnderstanding)
+        arView.debugOptions.insert(.showWorldOrigin)
+        arView.debugOptions.insert(.showPhysics)
         
         // For performance, disable render options that are not required for this app.
         arView.renderOptions = [.disablePersonOcclusion, .disableDepthOfField, .disableMotionBlur]
@@ -33,7 +35,7 @@ struct ARViewContainer: UIViewRepresentable {
         // ARView on its own does not turn on mesh classification.
         arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = .horizontal
+        configuration.planeDetection = [.horizontal, .vertical]
         configuration.environmentTexturing = .automatic
         arView.session.run(configuration)
         
