@@ -10,27 +10,32 @@ import RealityKit
 
 class CharacterControllerSystem : System {
     
-    let entity: Entity
+    private static let query = EntityQuery(where: .has(GameStateComponent.self))
     
-    required init(scene: Scene) {
-        print("Init CharacterControllerSystem")
-        entity = Entity()
-        
-        let anchor = AnchorEntity(
-            plane: .horizontal,
-            classification: .any
-        )
-        anchor.addChild(entity)
-        
-        let boxResource = MeshResource.generateBox(size: 0.08)
-        let myMaterial = SimpleMaterial(color: .blue, roughness: 0, isMetallic: true)
-        let myEntity = ModelEntity(mesh: boxResource, materials: [myMaterial])
-        entity.addChild(myEntity)
-        
-        scene.addAnchor(anchor)
-    }
+    var playerEntity : Entity?
+    
+    required init(scene: Scene) { print("ini character system called") }
 
     func update(context: SceneUpdateContext) {
-        // RealityKit automatically calls this every frame for every scene.
+        if(playerEntity == nil){
+            playerEntity = context.scene.performQuery(Self.query).map({ $0 }).first
+        }
+        
+        guard let gameState = (playerEntity?.components[GameStateComponent.self] as? GameStateComponent)?.gameState else {return }
+        
+        let forces = SIMD3<Float>(
+            gameState.characterSpeed.x,
+            0,
+            gameState.characterSpeed.y
+        )
+        let deltaTime = Float(context.deltaTime)
+        playerEntity?.moveCharacter(
+            by: forces * deltaTime,
+            deltaTime: deltaTime,
+            relativeTo: nil
+        )
+        //print("the speed now is \(gameState.characterSpeed.x), \(gameState.characterSpeed.y)")
     }
+    
+ 
 }

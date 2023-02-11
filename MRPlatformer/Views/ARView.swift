@@ -11,6 +11,12 @@ import ARKit
 
 struct ARViewContainer: UIViewRepresentable {
     
+    private var gameState:GameState
+    
+    public init(_ gameState: GameState) {
+        self.gameState = gameState
+    }
+    
     func makeUIView(context: Context) -> ARView {
         
         let arView = ARView(frame: .zero)
@@ -35,14 +41,43 @@ struct ARViewContainer: UIViewRepresentable {
         // ARView on its own does not turn on mesh classification.
         arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal, .vertical]
+        configuration.planeDetection = [.horizontal]
         configuration.environmentTexturing = .automatic
         arView.session.run(configuration)
-        
+        createPlayer(view:arView)
         return arView
         
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
     
+    func createPlayer(view : ARView){
+        // create model
+        let entity = Entity()
+        let boxResource = MeshResource.generateBox(size: 0.08)
+        let myMaterial = SimpleMaterial(color: .blue, roughness: 0, isMetallic: true)
+        let modelEntity = ModelEntity(mesh: boxResource, materials: [myMaterial])
+        entity.addChild(modelEntity)
+        // add game state compoenent
+       
+//        entity.components[CharacterControllerComponent.self] = CharacterControllerComponent(
+//            radius: 0.1,
+//            height: 0.1
+//        )
+        entity.components[GameStateComponent.self] = GameStateComponent(gameState: self.gameState)
+        print("created entity in ARView")
+        
+        let anchor = AnchorEntity(
+            plane: .horizontal,
+            classification: .any
+        )
+        anchor.addChild(entity)
+        
+        view.scene.addAnchor(anchor)
+        print("added to ARView")
+        
+    }
+    
+    
 }
+
