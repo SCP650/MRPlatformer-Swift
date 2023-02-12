@@ -8,7 +8,7 @@
 import Foundation
 import RealityKit
 
-class CharacterControllerSystem : System {
+class PlayerControllerSystem : System {
     
     private static let query = EntityQuery(where: .has(GameStateComponent.self))
     

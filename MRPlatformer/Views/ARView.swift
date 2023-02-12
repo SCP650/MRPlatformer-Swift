@@ -30,9 +30,9 @@ struct ARViewContainer: UIViewRepresentable {
         arView.environment.sceneUnderstanding.options.insert(.physics)
         
         // Display a debug visualization of the mesh.
-        arView.debugOptions.insert(.showSceneUnderstanding)
+//        arView.debugOptions.insert(.showSceneUnderstanding)
         arView.debugOptions.insert(.showWorldOrigin)
-        arView.debugOptions.insert(.showPhysics)
+//        arView.debugOptions.insert(.showPhysics)
         
         // For performance, disable render options that are not required for this app.
         arView.renderOptions = [.disablePersonOcclusion, .disableDepthOfField, .disableMotionBlur]
@@ -52,24 +52,29 @@ struct ARViewContainer: UIViewRepresentable {
     func updateUIView(_ uiView: ARView, context: Context) {}
     
     func createPlayer(view : ARView){
+        let radius : Float = 0.2
         // create model
         let entity = Entity()
-        let boxResource = MeshResource.generateBox(size: 0.08)
-        let myMaterial = SimpleMaterial(color: .blue, roughness: 0, isMetallic: true)
+        let boxResource = MeshResource.generateBox(size: radius)
+        let myMaterial = SimpleMaterial(color: .blue, roughness: 0, isMetallic: false)
         let modelEntity = ModelEntity(mesh: boxResource, materials: [myMaterial])
         entity.addChild(modelEntity)
         // add game state compoenent
+        entity.position.y = radius / 2
        
-//        entity.components[CharacterControllerComponent.self] = CharacterControllerComponent(
-//            radius: 0.1,
-//            height: 0.1
-//        )
+        entity.components[CharacterControllerComponent.self] = CharacterControllerComponent(
+            radius: radius,
+            height: radius*2
+        )
+//        entity.components[CharacterControllerStateComponent.self] = CharacterControllerStateComponent()
+//        entity.characterController = CharacterControllerComponent()
         entity.components[GameStateComponent.self] = GameStateComponent(gameState: self.gameState)
         print("created entity in ARView")
         
         let anchor = AnchorEntity(
             plane: .horizontal,
-            classification: .any
+            classification: .any,
+            minimumBounds: 1.0 * .init(radius, radius)
         )
         anchor.addChild(entity)
         
