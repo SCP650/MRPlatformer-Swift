@@ -24,13 +24,11 @@ struct ARViewContainer: UIViewRepresentable {
         arView.environment.sceneUnderstanding.options = []
         
         // Turn on occlusion from the scene reconstruction's mesh.
-        arView.environment.sceneUnderstanding.options.insert(.occlusion)
-        
-        // Turn on physics for the scene reconstruction's mesh.
-        arView.environment.sceneUnderstanding.options.insert(.physics)
+        arView.environment.sceneUnderstanding.options.insert([.collision, .physics, .receivesLighting, .occlusion])
+         
         
         // Display a debug visualization of the mesh.
-//        arView.debugOptions.insert(.showSceneUnderstanding)
+        arView.debugOptions.insert(.showSceneUnderstanding)
         arView.debugOptions.insert(.showWorldOrigin)
 //        arView.debugOptions.insert(.showPhysics)
         
@@ -41,6 +39,7 @@ struct ARViewContainer: UIViewRepresentable {
         // ARView on its own does not turn on mesh classification.
         arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
+        configuration.sceneReconstruction = .mesh
         configuration.planeDetection = [.horizontal]
         configuration.environmentTexturing = .automatic
         arView.session.run(configuration)
