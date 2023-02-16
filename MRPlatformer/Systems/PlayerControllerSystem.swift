@@ -22,10 +22,14 @@ class PlayerControllerSystem : System {
         }
         
         guard let gameState = (playerEntity?.components[GameStateComponent.self] as? GameStateComponent)?.gameState else {return }
-        
+        var JumpSpeed = Float(0)
+        if(gameState.shouldJump){
+            JumpSpeed = Float(5)
+            gameState.shouldJump = false
+        }
         let forces = SIMD3<Float>(
             gameState.characterSpeed.x,
-            0,
+            JumpSpeed,
             gameState.characterSpeed.y
         )
         let deltaTime = Float(context.deltaTime)
