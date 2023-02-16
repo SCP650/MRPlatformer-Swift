@@ -22,7 +22,6 @@ struct ContentView : View {
                     .onEnded({ _ in gameState.characterSpeed = SIMD2(0, 0) })
             )
             .onTapGesture {
-                print("tap gesture, should jump was \(gameState.shouldJump)")
                 gameState.shouldJump = true
             }
     }

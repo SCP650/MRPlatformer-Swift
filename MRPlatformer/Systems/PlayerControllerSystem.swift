@@ -22,9 +22,9 @@ class PlayerControllerSystem : System {
         }
         
         guard let gameState = (playerEntity?.components[GameStateComponent.self] as? GameStateComponent)?.gameState else {return }
-        var JumpSpeed = Float(0)
+        var JumpSpeed = Float(-0.5) //gravity
         if(gameState.shouldJump){
-            JumpSpeed = Float(5)
+            JumpSpeed = Float(15)
             gameState.shouldJump = false
         }
         let forces = SIMD3<Float>(

@@ -59,7 +59,7 @@ struct ARViewContainer: UIViewRepresentable {
         let modelEntity = ModelEntity(mesh: boxResource, materials: [myMaterial])
         entity.addChild(modelEntity)
         // add game state compoenent
-        entity.position.y = radius / 2
+        entity.position.y = radius / 2 + 5
        
         entity.components[CharacterControllerComponent.self] = CharacterControllerComponent(
             radius: radius,
